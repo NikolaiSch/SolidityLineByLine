@@ -65,4 +65,28 @@ contract WETH is ERC20 {
  - We then emit the event Deposit that we defined before, which creates an event in the frontend with the variables we gave it
 
 ```solidity
+  function withdraw(uint256 amount) public {
+        _burn(msg.sender, amount);
+        (bool success,) = payable(msg.sender).call{value: amount}("");
+        require(success, "WETH: Revert due to failed withdraw call");
+        emit Withdraw(amount, msg.sender);
+    }
+```
+
+- We add a public function to withdraw Ether from the WETH contract, when they have enough WETH
+- First, we use \_burn to burn the token. This will fail and revert if they do not have enough WETH
+- Then we use payable() to declare an address as payable, which we can then call with the value: amount (so we can interact with smart contracts too)
+- We then check that the previous call was a successful transaction, and if it wasn't, we revert
+- Then we emit a withdraw event
+
+```solidity
+  receive() external payable {
+        deposit();
+    }
+```
+
+- This receive function, is a catchall for those who send funds to the smart contract without calling it.
+
+
+
   
