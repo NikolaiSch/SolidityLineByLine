@@ -21,4 +21,8 @@ contract WETH is ERC20 {
         require(success, "WETH: Revert due to failed withdraw call");
         emit Withdraw(amount, msg.sender);
     }
+
+    receive() external payable {
+        deposit();
+    }
 }
